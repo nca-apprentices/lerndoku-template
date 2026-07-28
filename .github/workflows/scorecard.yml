@@ -1,0 +1,43 @@
+name: Scorecard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "30 6 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      security-events: write
+      id-token: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run Scorecard analysis
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+      - name: Upload SARIF artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sarif
+          path: results.sarif
+          retention-days: 5
+      - name: Upload to code scanning
+        uses: github/codeql-action/upload-sarif@f58f0d11ebf5dedd870fab2f999275f7602cfa46 # codeql-bundle-v2.26.0
+        with:
+          sarif_file: results.sarif

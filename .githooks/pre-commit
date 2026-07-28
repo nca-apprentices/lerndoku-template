@@ -1,0 +1,12 @@
+#!/bin/sh
+# Checks formatting (dprint + rumdl) before every commit.
+command -v mise >/dev/null 2>&1 || {
+  echo "mise is missing - see README (Quickstart section) for installation."
+  exit 1
+}
+
+make fmt-check || {
+  echo ""
+  echo "Formatting is off. Run 'make fmt' and commit again."
+  exit 1
+}

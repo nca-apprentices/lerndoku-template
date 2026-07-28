@@ -1,0 +1,6 @@
+[tools]
+zola = "0.22.1"
+python = "3.14"
+"github:Pagefind/pagefind" = "1.5.2"
+# dprint, rumdl, and ruff are installed on demand via `mise exec tool@version`
+# (versions pinned in the Makefile), keeping `mise install` lean.

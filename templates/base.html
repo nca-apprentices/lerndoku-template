@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#f8f7f3" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0f1217" media="(prefers-color-scheme: dark)">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    >
+    <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+    {% if page is defined and page.description %}
+      <meta name="description" content="{{ page.description }}">
+    {% else %}
+      <meta name="description" content="{{ config.description }}">
+    {% endif %}
+    <link rel="alternate" type="application/atom+xml" href="{{ config.base_url | safe }}/atom.xml" title="{{ config.title }}">
+    <link rel="icon" href="{{ get_url(path="favicon.svg") }}" type="image/svg+xml">
+    <link rel="stylesheet" href="{{ get_url(path="style.css", cachebust=true) }}">
+    {% block head %}{% endblock head %}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt</a>
+    <div class="progress" aria-hidden="true"></div>
+    <header class="site-header">
+      <nav aria-label="Hauptnavigation">
+        <a class="brand" href="{{ config.base_url | safe }}/">{{ config.title }}</a>
+        <div class="nav-links">
+          <a href="{{ get_url(path="@/regeln/_index.md") }}"{% if current_path is defined and current_path is starting_with("/regeln") %} aria-current="page"{% endif %}>Regeln</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main">
+      {% block content %}{% endblock content %}
+    </main>
+    {% set release = get_env(name="RELEASE", default="dev") %}
+    <footer class="site-footer">
+      {% set root_section = get_section(path="_index.md") %}
+      {% set entry_count = root_section.pages | length %}
+      <p>
+        <span>{{ entry_count }} {% if entry_count == 1 %}Eintrag{% else %}Einträge{% endif %}</span>
+        <span>
+          {% if release != "dev" %}
+            <a href="{{ config.extra.repository | safe }}/commit/{{ release }}">{{ release }}</a>
+          {% else %}
+            {{ release }}
+          {% endif %}
+        </span>
+      </p>
+    </footer>
+  </body>
+</html>

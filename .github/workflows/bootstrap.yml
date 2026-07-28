@@ -1,0 +1,46 @@
+name: Bootstrap template
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  personalize:
+    # Runs only in repositories created from the template, never in the
+    # template itself, and only while the template URLs are still present.
+    if: github.repository != 'nca-apprentices/lerndoku-template'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # v2.20.0
+        with:
+          egress-policy: audit
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Rewrite template URLs
+        env:
+          REPO_FULL: ${{ github.repository }}
+        run: |
+          if ! grep -qF 'nca-apprentices.github.io/lerndoku-template"' zola.toml; then
+            echo "Already personalized, nothing to do."
+            exit 0
+          fi
+          owner="${REPO_FULL%/*}"
+          repo="${REPO_FULL#*/}"
+          owner_lc="${owner,,}"
+          export owner repo owner_lc
+          perl -pi -e '
+            s{github\.com/nca-apprentices/lerndoku-template(?![\w-])}{github.com/$ENV{owner}/$ENV{repo}}g;
+            s{nca-apprentices\.github\.io%2Flerndoku-template(?![\w-])}{$ENV{owner_lc}.github.io%2F$ENV{repo}}g;
+            s{nca-apprentices\.github\.io/lerndoku-template(?![\w-])}{$ENV{owner_lc}.github.io/$ENV{repo}}g;
+          ' README.md zola.toml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md zola.toml
+          git commit -m "chore: personalize template URLs"
+          git push

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <script src="{{ get_url(path="search.js", cachebust=true) }}" defer></script>
+{% endblock head %}
+
+{% block content %}
+  <div class="listing-page doku-index" data-base="{{ config.base_url | safe }}">
+    <div class="filter-bar">
+      <label class="filter-search">
+        <span class="visually-hidden">Dokus durchsuchen</span>
+        <input type="search" id="doku-search" placeholder="Dokus durchsuchen" autocomplete="off">
+      </label>
+      <p class="filter-count" id="doku-count" aria-live="polite"></p>
+    </div>
+
+    <div id="browse">
+      <ul class="doku-list">
+        {% for page in paginator.pages %}
+        <li>
+          <a class="doku-card" href="{{ page.permalink | safe }}">
+            <span class="doku-meta">
+              <time datetime="{{ page.date }}">{{ page.date | date(format="%d.%m.%Y") }}</time>
+            </span>
+            <span class="doku-title">{{ page.title }}</span>
+            <span class="doku-summary">
+              {%- if page.summary -%}
+                {{ page.summary | striptags | truncate(length=280) }}
+              {%- else -%}
+                {{ page.content | striptags | truncate(length=280) }}
+              {%- endif -%}
+            </span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if paginator.number_pagers > 1 %}
+        <nav class="pagination" aria-label="Seiten">
+          {% if paginator.previous %}
+            <a href="{{ paginator.previous | safe }}">← Neuere</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+          <span class="page-count">Seite {{ paginator.current_index }} von {{ paginator.number_pagers }}</span>
+          {% if paginator.next %}
+            <a href="{{ paginator.next | safe }}">Ältere →</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+        </nav>
+      {% endif %}
+    </div>
+
+    <ul class="doku-list" id="search-results" hidden></ul>
+    <p class="filter-empty" id="search-empty" hidden>Keine Einträge gefunden.</p>
+    <button type="button" class="search-more" id="search-more" hidden>Mehr Ergebnisse</button>
+  </div>
+{% endblock content %}

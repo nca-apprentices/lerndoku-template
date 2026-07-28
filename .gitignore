@@ -1,0 +1,10 @@
+/dist
+/public
+/static/processed_images
+/static/pagefind
+.DS_Store
+.idea
+.claude-notes
+__pycache__/
+.ruff_cache/
+.rumdl_cache/

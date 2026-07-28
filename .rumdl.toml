@@ -1,0 +1,11 @@
+[global]
+respect_gitignore = true
+exclude = [
+  "dist",
+  "public",
+  "node_modules",
+  ".docusaurus",
+  ".idea",
+  ".claude-notes",
+]
+disable = ["MD013"]

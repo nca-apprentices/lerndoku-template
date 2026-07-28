@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} – {{ config.title }}{% endblock title %}
+
+{% block head %}
+  <script src="{{ get_url(path="copy.js", cachebust=true) }}" defer></script>
+{% endblock head %}
+
+{% block content %}
+  <article class="prose">
+    <header class="post-header">
+      <h1>{{ page.title }}</h1>
+      {% set start_parts = config.extra.lerndoku_start | split(pat="-") %}
+      {% set start_y = start_parts[0] | int %}
+      {% set start_m = start_parts[1] | int %}
+      {% set entry_y = page.date | date(format="%Y") | int %}
+      {% set entry_m = page.date | date(format="%m") | int %}
+      {% set month_diff = (entry_y - start_y) * 12 + entry_m - start_m %}
+      {% if month_diff < 0 %}{% set month_diff = 0 %}{% endif %}
+      {% set years = month_diff / 12 %}
+      {% set lj = years | round(method="floor") | int %}
+      <p class="post-meta">
+        <time datetime="{{ page.date }}" data-pagefind-meta="date[datetime]">{{ page.date | date(format="%d.%m.%Y") }}</time>
+        · {{ lj + 1 }}. Lehrjahr
+      </p>
+      {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+      {% if page.extra.tags %}
+        <p class="tags">
+          {% for tag in page.extra.tags %}
+            <span class="tag" data-pagefind-filter="tag">{{ tag }}</span>
+          {% endfor %}
+        </p>
+      {% endif %}
+    </header>
+    <div class="prose-body">
+      {{ page.content | safe }}
+    </div>
+    <p class="back-link"><a href="{{ config.base_url | safe }}/">← Alle Dokus</a></p>
+  </article>
+{% endblock content %}

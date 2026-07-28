@@ -1,0 +1,13 @@
+{% set image_path = page.colocated_path ~ src %}
+{% set resized = resize_image(path=image_path, width=1200, height=10000, op="fit", format="webp", quality=85) %}
+<figure>
+  <img
+    src="{{ resized.url | safe }}"
+    alt="{{ alt }}"
+    width="{{ resized.width }}"
+    height="{{ resized.height }}"
+    loading="lazy"
+    decoding="async"
+  >
+  {% if caption | default(value="") != "" %}<figcaption>{{ caption }}</figcaption>{% endif %}
+</figure>

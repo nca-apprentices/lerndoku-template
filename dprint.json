@@ -1,0 +1,24 @@
+{
+  "indentWidth": 2,
+  "lineWidth": 80,
+  "useTabs": false,
+  "newLineKind": "lf",
+  "json": {},
+  "toml": {},
+  "markdown": {
+    "textWrap": "always"
+  },
+  "excludes": [
+    "dist/**",
+    "public/**",
+    "node_modules/**",
+    ".docusaurus/**",
+    ".idea/**",
+    ".claude-notes/**"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/toml-0.7.0.wasm",
+    "https://plugins.dprint.dev/json-0.22.0.wasm",
+    "https://plugins.dprint.dev/markdown-0.22.1.wasm"
+  ]
+}
