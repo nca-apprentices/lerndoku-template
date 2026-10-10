@@ -1,0 +1,6 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>nca-apprentices/.github"],
+  "enabledManagers": ["github-actions"],
+  "packageRules": [{ "groupName": "actions", "matchPackageNames": ["*"] }]
+}
